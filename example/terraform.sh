@@ -8,7 +8,7 @@ set -e errexit
 set -o pipefail
 
 # check if terraform binary is available on system PATH:
-if [[ -z $(which terraform) ]]; then
+if [[ -z $(command -v terraform) ]]; then
   echo "'terraform' binary not found on your system PATH. Please make sure you installed it correctly"
   echo "Aborting now..."
   exit 1
