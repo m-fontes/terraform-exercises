@@ -36,5 +36,27 @@ resource "aws_instance" "example" {
   instance_type = "t2.micro"
   key_name = "mfontes-pub"
   security_groups = ["allow_all"]
+
+  connection {
+    type = "ssh"
+    host = "${aws_instance.example.public_ip}"
+    user = "ubuntu"
+    port = "22"
+    private_key = "${file("/Users/mfontes/.ssh/mfontes")}"
+  }
+
+  // copy our example script to the server
+  provisioner "file" {
+    source      = "docker-install.sh"
+    destination = "/tmp/docker-install.sh"
+  }
+
+  // change permissions to executable and pipe its output into a new file
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/docker-install.sh",
+      "sudo /tmp/docker-install.sh | tee /tmp/docker-install.log",
+    ]
+  }
 }
 
